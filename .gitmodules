@@ -1,0 +1,3 @@
+[submodule "snakemake-pipeline-general"]
+	path = snakemake-pipeline-general
+	url = git@github.com:yztxwd/snakemake-pipeline-general.git
