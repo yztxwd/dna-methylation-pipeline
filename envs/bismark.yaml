@@ -1,0 +1,8 @@
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - bismark=0.23.1
+  - tbb=2020.2
+  - perl-gdgraph
