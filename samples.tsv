@@ -1,0 +1,3 @@
+sample	condition	rep	unit	fq1	fq2
+TAB_seq	WT	rep1	tech1	SRR925880.fastq.gz	SRR925953.fastq.gz
+methylC_Seq	WT	rep3	tech8	SRR925953.fastq.gz
