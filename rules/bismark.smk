@@ -19,8 +19,7 @@ rule bismark_mapping_pe:
         "../envs/bismark.yaml"
     shell:
         """
-        # multicore is hardcoded as 4
-        bismark {params.extra} -o output/mapped/ -S {params.basename} --multicore 4 {params.index} -1 {input[0]} -2 {input[1]}
+        bismark {params.extra} -o output/mapped/ -S {params.basename} {params.index} -1 {input[0]} -2 {input[1]}
         """
     
 rule bismark_mapping_se:
@@ -44,8 +43,7 @@ rule bismark_mapping_se:
         "../envs/bismark.yaml"
     shell:
         """
-        # multicore is hardcoded as 4
-        bismark {params.extra} -o output/mapped/ -S {params.basename} --multicore 4 {params.index} {input}
+        bismark {params.extra} -o output/mapped/ -S {params.basename} {params.index} {input}
         """
 
 rule bismark_methylation_extractor:
