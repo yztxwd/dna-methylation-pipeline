@@ -6,7 +6,7 @@ samples: samples.tsv
 # column "strandedness" is present (optional), value can be empty or has one of these values: none, yes
 # or reverse.
 
-aligner: "{{cookiecutter.aligner}}" # bowtie2 or bwa
+aligner: "bowtie2" # bowtie2 or bwa
 skiptrim: {{cookiecutter.skiptrim}}
 trimmer: "{{cookiecutter.trimmer}}" # trimmomatic or fastp
 
@@ -33,16 +33,16 @@ fastp:
 
 bowtie2:
   # bowtie2 index
-  index: "{{cookiecutter.bowtie2_index}}"
+  index: "path/to/bowtie2/index"
   # extra parameters, see manual: http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml
-  extra: "{{cookiecutter.bowtie2}}"
+  extra: ""
 
 # bwa-mem
 bwa:
   # bwa index
-  index: "{{cookiecutter.bwa_index}}"
+  index: "path/to/bwa/index"
   # extra parameters, see manual: http://bio-bwa.sourceforge.net/bwa.shtml
-  extra: "{{cookiecutter.bwa_mem}}"
+  extra: ""
 
 mark_duplicates: ""
 
@@ -56,7 +56,7 @@ samtools_view:
 # this is skipped by default, enable when in need
 # CAUTION: Don't specify MAPQ threshold > 0 when using BWA since BWA doesn't output meaningful MAPQ!!!
 filter:
-  skip: {{cookiecutter.skipfilter}}
+  skip: true
   # parameters
   pe: "-m pair -f 0 -t 10"
   se: "-m single -f 0 -t 10"
@@ -64,7 +64,7 @@ filter:
 genomecov: "-bg -pc"
 
 bedGraphToBigWig:
-  chrom: "{{cookiecutter.genome_fai}}"
+  chrom: "path/to/genome/size"
   params: ""
 
 bamCoverage: ""
