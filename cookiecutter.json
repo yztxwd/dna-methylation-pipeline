@@ -1,5 +1,6 @@
 {
     "directory_name": "dna-methylation-pipeline",
+    "aligner": ["bowtie2", "bwa"],
     "skiptrim": [false, true],
     "trimmer": ["trommomatic", "fastp"],
     "nodes": 1,
