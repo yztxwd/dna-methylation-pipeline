@@ -2,7 +2,7 @@
     "directory_name": "dna-methylation-pipeline",
     "aligner": ["bowtie2", "bwa"],
     "skiptrim": [false, true],
-    "trimmer": ["trommomatic", "fastp"],
+    "trimmer": ["trimmomatic", "fastp"],
     "nodes": 1,
     "threads": 20,
     "mem": 32,
