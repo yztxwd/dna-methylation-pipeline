@@ -1,0 +1,20 @@
+{
+    "directory_name": "dna-methylation-pipeline",
+    "aligner": ["bowtie2", "bwa"],
+    "skiptrim": [false, true],
+    "trimmer": ["trommomatic", "fastp"],
+    "nodes": 1,
+    "threads": 20,
+    "mem": 32,
+    "pe_adapter": "path/to/PE/adapter",
+    "se_adapter": "path/to/SE/adapter",
+    "fastp": "-g # Ignore this if you already specified skiptrim or using trimmomatic",
+    "bismark_index": "path/to/bismark/index",
+    "bismark": "--non-directional",
+    "bismark_methylation_extractor": "",
+    "_copy_without_render": [
+        "*.smk",
+        "*Snakefile"
+    ],
+    "git_submodule": "https://github.com/yztxwd/snakemake-pipeline-general.git"
+}
