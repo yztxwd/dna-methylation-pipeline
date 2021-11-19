@@ -6,7 +6,6 @@ samples: samples.tsv
 # column "strandedness" is present (optional), value can be empty or has one of these values: none, yes
 # or reverse.
 
-aligner: "{{cookiecutter.aligner}}" # bowtie2 or bwa
 skiptrim: {{cookiecutter.skiptrim}}
 trimmer: "{{cookiecutter.trimmer}}" # trimmomatic or fastp
 
@@ -31,45 +30,6 @@ fastp:
   se_adapter: "{{cookiecutter.se_adapter}}"
   extra: "{{cookiecutter.fastp}}"
 
-bowtie2:
-  # bowtie2 index
-  index: "{{cookiecutter.bowtie2_index}}"
-  # extra parameters, see manual: http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml
-  extra: "{{cookiecutter.bowtie2}}"
-
-# bwa-mem
-bwa:
-  # bwa index
-  index: "{{cookiecutter.bwa_index}}"
-  # extra parameters, see manual: http://bio-bwa.sourceforge.net/bwa.shtml
-  extra: "{{cookiecutter.bwa_mem}}"
-
-mark_duplicates: ""
-
-samtools_view:
-  # flag used to filter reads, remove inproperly paired reads or duplicates
-  # user can adjust flag to fit different requirements
-  pe: "-F 3852 -b" # Remove duplicates and supplementary alignment
-  se: "-F 2820 -b" # Won't remove duplicates and supplementary alignment
-
-# filter pair-end reads by 1. -t: Both reads > cetern MAPQ; 2. -f: fragment size < threshold 3. two reads must be on the same chromosome
-# this is skipped by default, enable when in need
-# CAUTION: Don't specify MAPQ threshold > 0 when using BWA since BWA doesn't output meaningful MAPQ!!!
-filter:
-  skip: {{cookiecutter.skipfilter}}
-  # parameters
-  pe: "-m pair -f 0 -t 10"
-  se: "-m single -f 0 -t 10"
-
-genomecov: "-bg -pc"
-
-bedGraphToBigWig:
-  chrom: "{{cookiecutter.genome_fai}}"
-  params: ""
-
-bamCoverage: ""
-
-bamCompare: "--scaleFactorsMethod SES -bl data/mm10-blacklist.v2.bed"
 ####<<<< snakemake-pipeline-general ####
 #### dna-methylation-pipeline >>>>####
 
