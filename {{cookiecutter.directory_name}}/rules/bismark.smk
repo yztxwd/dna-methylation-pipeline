@@ -2,8 +2,8 @@ rule bismark_mapping_pe:
     input:
         align_pe_find_input
     output:
-        bam="output/mapped/{sample}-{rep}-{unit}_bismark_bt2_PE.bam",
-        report="output/mapped/{sample}-{rep}-{unit}_bismark_bt2_PE_PE_report.txt"
+        bam="output/mapped/{sample}-{rep}-{unit}_bt2_PE.bam",
+        report="output/mapped/{sample}-{rep}-{unit}_bt2_PE_PE_report.txt"
     log:
         "logs/bismark/{sample}-{rep}-{unit}.log"
     params:
@@ -19,15 +19,15 @@ rule bismark_mapping_pe:
         "../envs/bismark.yaml"
     shell:
         """
-        bismark {params.extra} -o output/mapped/ -S {params.basename} {params.index} -1 {input[0]} -2 {input[1]}
+        bismark {params.extra} -o output/mapped/ -B {params.basename} {params.index} -1 {input[0]} -2 {input[1]} > {log}
         """
     
 rule bismark_mapping_se:
     input:
         align_se_find_input
     output:
-        bam="output/mapped/{sample}-{rep}-{unit}_bismark_bt2_SE.bam",
-        report="output/mapped/{sample}-{rep}-{unit}_bismark_bt2_SE_SE_report.txt"
+        bam="output/mapped/{sample}-{rep}-{unit}_bt2_SE.bam",
+        report="output/mapped/{sample}-{rep}-{unit}_bt2_SE_SE_report.txt"
     log:
         "logs/bismark/{sample}-{rep}-{unit}.log"
     params:
@@ -43,18 +43,18 @@ rule bismark_mapping_se:
         "../envs/bismark.yaml"
     shell:
         """
-        bismark {params.extra} -o output/mapped/ -S {params.basename} {params.index} {input}
+        bismark {params.extra} -o output/mapped/ -B {params.basename}  {params.index} {input} > {log}
         """
 
 rule bismark_methylation_extractor:
     input:
-        lambda wildcards: "output/mapped/{sample}-{rep}-{unit}_bismark_bt2_" + ("SE.bam" if is_single_end(**wildcards) else "PE.bam")
+        lambda wildcards: "output/mapped/{sample}-{rep}-{unit}_bt2_{type}.bam"
     output:
-        CpG="output/bismark_methylation_extract/CpG_context_{sample}-{rep}-{unit}_bismark_bt2.txt",
-        CHG="output/bismark_methylation_extract/CHG_context_{sample}-{rep}-{unit}_bismark_bt2.txt",
-        CHH="output/bismark_methylation_extract/CHH_context_{sample}-{rep}-{unit}_bismark_bt2.txt"
+        CpG="output/bismark_methylation_extract/CpG_context_{sample}-{rep}-{unit}_bt2_{type}.txt",
+        CHG="output/bismark_methylation_extract/CHG_context_{sample}-{rep}-{unit}_bt2_{type}.txt",
+        CHH="output/bismark_methylation_extract/CHH_context_{sample}-{rep}-{unit}_bt2_{type}.txt"
     log:
-        "logs/bismark_methylation_extract/{sample}-{rep}-{unit}.log"
+        "logs/bismark_methylation_extract/{sample}-{rep}-{unit}_{type}.log"
     params:
         genome=config["bismark"]["index"],
         extra=config["bismark_methylation_extractor"]["params"]
@@ -75,10 +75,14 @@ def bismark2bedGraph_find_input(wildcards):
     # keep rows with specified sample index
     slices = samples.loc[wildcards.sample, :]
     # get the bam files corresponding to the specified sample
-    CpG_inputs = list(slices.apply(lambda row: f"output/bismark_methylation_extract/CpG_context_{wildcards.sample}-{row['rep']}-{row['unit']}_bismark_bt2.txt", axis=1))
-    CHG_inputs = list(slices.apply(lambda row: f"output/bismark_methylation_extract/CHG_context_{wildcards.sample}-{row['rep']}-{row['unit']}_bismark_bt2.txt", axis=1))
-    CHH_inputs = list(slices.apply(lambda row: f"output/bismark_methylation_extract/CHH_context_{wildcards.sample}-{row['rep']}-{row['unit']}_bismark_bt2.txt", axis=1))
-
+    CpG_inputs = []
+    CHG_inputs = []
+    CHH_inputs = []
+    for row in slices.itertuples():
+        type = "SE" if is_single_end(row.sample, row.rep, row.unit) else "PE"
+        CpG_inputs.append(f"output/bismark_methylation_extract/CpG_context_{row.sample}-{row.rep}-{row.unit}_bt2_{type}.txt") 
+        CHG_inputs.append(f"output/bismark_methylation_extract/CHG_context_{row.sample}-{row.rep}-{row.unit}_bt2_{type}.txt") 
+        CHH_inputs.append(f"output/bismark_methylation_extract/CHH_context_{row.sample}-{row.rep}-{row.unit}_bt2_{type}.txt") 
     return CpG_inputs + CHG_inputs + CHH_inputs 
 
 rule bismark2bedGraph_CpG:
