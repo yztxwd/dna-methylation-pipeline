@@ -52,7 +52,8 @@ rule bismark_methylation_extractor:
     output:
         CpG="output/bismark_methylation_extract/CpG_context_{sample}-{rep}-{unit}_bt2_{type}.txt",
         CHG="output/bismark_methylation_extract/CHG_context_{sample}-{rep}-{unit}_bt2_{type}.txt",
-        CHH="output/bismark_methylation_extract/CHH_context_{sample}-{rep}-{unit}_bt2_{type}.txt"
+        CHH="output/bismark_methylation_extract/CHH_context_{sample}-{rep}-{unit}_bt2_{type}.txt",
+        png=report(directory("output/bismark_methylation_extract"), patterns=["{sample}-{rep}-{unit}_bt2_{type}.M-bias_R[12].png"], caption="../report/m_bias.rst", category="Bismark")
     log:
         "logs/bismark_methylation_extract/{sample}-{rep}-{unit}_{type}.log"
     params:
