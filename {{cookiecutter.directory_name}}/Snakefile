@@ -18,8 +18,8 @@ samples = pd.read_table(config["samples"]).set_index(["sample", "rep", "unit"], 
 rule all:
     input:
         "output/qc/multiqc/multiqc.html",
-        expand("output/bismark_methylation_extract/{sample}_bismark_bt2.CpG.bedGraph.gz", sample = samples["sample"])
-#        expand("output/bismark_methylation_extract/{sample}_bismark_bt2.all.bedGraph.gz", sample = samples["sample"])
+        expand("output/bismark2bedGraph/{sample}_{context}/{sample}_bismark_bt2.{context}.bw", sample = samples["sample"], context = ["CpG", "CHG", "CHH"])
+#        expand("output/bismark2bedGraph/{sample}_all/", sample = samples["sample"])
 
 #### setup singularity ####
 

@@ -46,6 +46,8 @@ rule bismark_mapping_se:
         bismark {params.extra} -o output/mapped/ -B {params.basename}  {params.index} {input} > {log}
         """
 
+    
+
 rule bismark_methylation_extractor:
     input:
         lambda wildcards: "output/mapped/{sample}-{rep}-{unit}_bt2_{type}.bam"
@@ -83,48 +85,74 @@ def bismark2bedGraph_find_input(wildcards):
         CpG_inputs.append(f"output/bismark_methylation_extract/CpG_context_{row.sample}-{row.rep}-{row.unit}_bt2_{type}.txt") 
         CHG_inputs.append(f"output/bismark_methylation_extract/CHG_context_{row.sample}-{row.rep}-{row.unit}_bt2_{type}.txt") 
         CHH_inputs.append(f"output/bismark_methylation_extract/CHH_context_{row.sample}-{row.rep}-{row.unit}_bt2_{type}.txt") 
-    return CpG_inputs + CHG_inputs + CHH_inputs 
 
-rule bismark2bedGraph_CpG:
+    if wildcards.context == "CpG":
+        return CpG_inputs
+    elif wildcards.context == "CHG":
+        return CHG_inputs
+    elif wildcards.context == "CHH":
+        return CHH_inputs
+
+rule bismark2bedGraph_context:
     input:
         bismark2bedGraph_find_input
     output:
-        "output/bismark_methylation_extract/{sample}_bismark_bt2.CpG.bedGraph.gz"
+#        directory("output/bismark2bedGraph/{sample}_{context}/"),
+        "output/bismark2bedGraph/{sample}_{context}/{sample}_bismark_bt2.{context}.bedGraph.gz"
     log:
-        "logs/bismark_methylation_extract/{sample}.bismark2bedGraph.log"
+        "logs/bismark_methylation_extract/{sample}_{context}.bismark2bedGraph.log"
     params:
-        basename="{sample}_bismark_bt2.CpG.bedGraph",
+        basename="{sample}_bismark_bt2.{context}.bedGraph",
         extra=config["bismark2bedGraph"]["params"]
     threads:
-        4
+        config["threads"]
     resources:
         nodes=1,
-        mem=20
+        mem=20,
+        walltime="40:00:00"
     conda:
         "../envs/bismark.yaml"
     shell:
         """
-        bismark2bedGraph {params.extra} -o {params.basename} --dir output/bismark_methylation_extract {input} > {log}
+        bismark2bedGraph {params.extra} --CX -o {params.basename} --dir $(dirname {output}) {input}
+        """
+
+rule bismark_bedGraph2bigwig:
+    input:
+        bg = "output/bismark2bedGraph/{sample}_{context}/{sample}_bismark_bt2.{context}.bedGraph.gz",
+        chrom_size = config["bedGraphToBigWig"]["chrom"]
+    output:
+        "output/bismark2bedGraph/{sample}_{context}/{sample}_bismark_bt2.{context}.bw"
+    conda:
+        "../snakemake-pipeline-general/envs/ucsc.yaml"
+    resources:
+        mem = 40,
+        walltime = "12:00:00"
+    shell:
+        """
+        gunzip -c {input.bg} | tail -n +2 | sort -k1,1 -k2,2n > {input.bg}.tmp
+        bedGraphToBigWig {input.bg}.tmp {input.chrom_size} {output}
         """
         
 rule bismark2bedGraph_all:
     input:
         bismark2bedGraph_find_input
     output:
-        "output/bismark_methylation_extract/{sample}_bismark_bt2.all.bedGraph.gz"
+        directory("output/bismark2bedGraph/{sample}_all/")
     log:
         "logs/bismark_methylation_extract/{sample}.bismark2bedGraph.log"
     params:
         basename="{sample}_bismark_bt2.all.bedGraph",
         extra=config["bismark2bedGraph"]["params"]
     threads:
-        4
+        config["threads"]
     resources:
         nodes=1,
-        mem=20
+        mem=80,
+        walltime="120:00:00"
     conda:
         "../envs/bismark.yaml"
     shell:
         """
-        bismark2bedGraph {params.extra} --CX -o {params.basename} --dir output/bismark_methylation_extract {input} > {log}
+        bismark2bedGraph {params.extra} --CX -o {params.basename} --dir {output} {input}
         """
