@@ -22,6 +22,8 @@
     "bismark_index": "path/to/bismark/index",
     "bismark": "--non-directional",
     "bismark_methylation_extractor": "",
+    "blacklist": "path/to/blacklist",
+    "transcriptome": "GTF or BED gene annotation file",
     "_copy_without_render": [
         "*.smk",
         "*Snakefile"
