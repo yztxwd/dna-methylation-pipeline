@@ -1,3 +1,0 @@
-[submodule "snakemake-pipeline-general"]
-	path = {{cookiecutter.directory_name}}/snakemake-pipeline-general
-	url = git@github.com:yztxwd/snakemake-pipeline-general.git

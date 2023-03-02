@@ -31,13 +31,3 @@ singularity: "docker://continuumio/miniconda3"
 report: "report/workflow.rst"
 
 #### load rules ####
-include: "snakemake-pipeline-general/rules/global.smk"
-include: "snakemake-pipeline-general/rules/qc.smk"
-include: "snakemake-pipeline-general/rules/trim.smk"
-include: "snakemake-pipeline-general/rules/fastp.smk"
-include: "snakemake-pipeline-general/rules/bowtie2.smk"
-include: "snakemake-pipeline-general/rules/bwa.smk"
-include: "snakemake-pipeline-general/rules/filter.smk"
-include: "snakemake-pipeline-general/rules/merge.smk"
-include: "snakemake-pipeline-general/rules/coverage.smk"
-include: "rules/bismark.smk"
